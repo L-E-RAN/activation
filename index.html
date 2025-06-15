@@ -155,13 +155,13 @@
         const data = await res.json();
         const cities = new Set();
         data.result.records.forEach(r => {
-          if (r["שם_ישוב"]) cities.add(r["שם_ישוב"]);
+          if (r["שם_ישוב"]) cities.add(r["שם_ישוב"].trim());
         });
-        const citySelect = document.getElementById("citySelect");
+        const citiesList = document.getElementById("citiesList");
         [...cities].sort().forEach(city => {
           const opt = document.createElement("option");
-          opt.value = opt.text = city;
-          citySelect.appendChild(opt);
+          opt.value = city;
+          citiesList.appendChild(opt);
         });
       } catch (err) {
         alert("שגיאה בטעינת רשימת יישובים");
