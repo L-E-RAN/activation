@@ -158,6 +158,7 @@
           if (r["שם_ישוב"]) cities.add(r["שם_ישוב"].trim());
         });
         const citiesList = document.getElementById("citiesList");
+        citiesList.innerHTML = "";
         [...cities].sort().forEach(city => {
           const opt = document.createElement("option");
           opt.value = city;
