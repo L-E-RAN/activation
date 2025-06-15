@@ -86,7 +86,12 @@
       document.getElementById("close-scan").style.display = "block";
 
       scanner = new Html5Qrcode("reader");
-      scanner.start(
+    } catch (err) {
+        alert("❗ לא ניתן להפעיל מצלמה. ודא שהרשאות פתוחות ושאתה ב-HTTPS.");
+        console.error(err);
+    }
+      try {
+        scanner.start(
         { facingMode: "environment" },
         {
           fps: 10,
