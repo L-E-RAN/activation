@@ -71,7 +71,7 @@
       <select name="clientType" required>
         <option value="פרטי">פרטי</option>
         <option value="עסקי">עסקי</option>
-      </datalist>
+      </select>
     </label>
     <label>טלפון<input name="phone" type="tel" required /></label>
     <label>אימייל<input name="email" type="email" required /></label>
@@ -79,20 +79,10 @@
     <label>
       יישוב
       <input list="citiesList" name="city" id="citySelect" required />
-<datalist id="citiesList">
-        
-      </datalist>
+      <datalist id="citiesList"></datalist>
     </label>
     
-    
-    <label>
-      רחוב
-      <input list="streetsList" name="street" id="streetSelect" required disabled />
-<datalist id="streetsList">
-        <option value="">-- בחר יישוב קודם --</option>
-      </datalist>
-    </label>
-    
+    <label>רחוב<input name="street" required /></label>
     <label>מספר בית<input name="houseNumber" required /></label>
     <label>קומה<input name="floor" /></label>
     <label>דירה<input name="apartment" /></label>
@@ -153,56 +143,25 @@
       try {
         const res = await fetch("https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&limit=10000");
         const data = await res.json();
-        const cities = new Set();
+        const citiesSet = new Set();
         data.result.records.forEach(r => {
-          if (r["שם_ישוב"]) cities.add(r["שם_ישוב"].trim());
+          const name = r["שם_ישוב"];
+          if (name) citiesSet.add(name.trim());
         });
-        const citiesList = document.getElementById("citiesList");
-        citiesList.innerHTML = "";
-        [...cities].sort().forEach(city => {
+        const list = document.getElementById("citiesList");
+        list.innerHTML = "";
+        [...citiesSet].sort().forEach(city => {
           const opt = document.createElement("option");
           opt.value = city;
-          citiesList.appendChild(opt);
+          list.appendChild(opt);
         });
       } catch (err) {
-        alert("שגיאה בטעינת רשימת יישובים");
+        alert("שגיאה בטעינת שמות יישובים");
         console.error(err);
       }
     }
 
-    async function fetchStreets(city) {
-      const streetSelect = document.getElementById("streetSelect");
-      streetSelect.innerHTML = '<option value="">-- טוען רחובות... --</option>';
-      streetSelect.disabled = true;
-      try {
-        const res = await fetch("https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&limit=10000&q=" + encodeURIComponent(city));
-        const data = await res.json();
-        const streets = new Set();
-        data.result.records.forEach(r => {
-          if (r["שם_רחוב"]) streets.add(r["שם_רחוב"]);
-        });
-        streetSelect.innerHTML = '';
-        [...streets].sort().forEach(street => {
-          const opt = document.createElement("option");
-          opt.value = opt.text = street;
-          streetSelect.appendChild(opt);
-        });
-        streetSelect.disabled = false;
-      } catch (err) {
-        alert("שגיאה בטעינת רחובות");
-        console.error(err);
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      fetchCities();
-      document.getElementById("citySelect").addEventListener("change", e => {
-        const selected = e.target.value;
-        if (selected) {
-          fetchStreets(selected);
-        }
-      });
-    });
+    document.addEventListener("DOMContentLoaded", fetchCities);
   </script>
 </body>
 
