@@ -75,8 +75,22 @@
     </label>
     <label>טלפון<input name="phone" type="tel" required /></label>
     <label>אימייל<input name="email" type="email" required /></label>
-    <label>יישוב<input name="city" required /></label>
-    <label>רחוב<input name="street" required /></label>
+    
+    <label>
+      יישוב
+      <select name="city" id="citySelect" required>
+        <option value="">-- בחר יישוב --</option>
+      </select>
+    </label>
+    
+    
+    <label>
+      רחוב
+      <select name="street" id="streetSelect" required disabled>
+        <option value="">-- בחר יישוב קודם --</option>
+      </select>
+    </label>
+    
     <label>מספר בית<input name="houseNumber" required /></label>
     <label>קומה<input name="floor" /></label>
     <label>דירה<input name="apartment" /></label>
@@ -131,5 +145,62 @@
       closeBtn.style.display = "none";
     }
   </script>
+
+  <script>
+    async function fetchCities() {
+      try {
+        const res = await fetch("https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&limit=10000");
+        const data = await res.json();
+        const cities = new Set();
+        data.result.records.forEach(r => {
+          if (r["שם_ישוב"]) cities.add(r["שם_ישוב"]);
+        });
+        const citySelect = document.getElementById("citySelect");
+        [...cities].sort().forEach(city => {
+          const opt = document.createElement("option");
+          opt.value = opt.text = city;
+          citySelect.appendChild(opt);
+        });
+      } catch (err) {
+        alert("שגיאה בטעינת רשימת יישובים");
+        console.error(err);
+      }
+    }
+
+    async function fetchStreets(city) {
+      const streetSelect = document.getElementById("streetSelect");
+      streetSelect.innerHTML = '<option value="">-- טוען רחובות... --</option>';
+      streetSelect.disabled = true;
+      try {
+        const res = await fetch("https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&limit=10000&q=" + encodeURIComponent(city));
+        const data = await res.json();
+        const streets = new Set();
+        data.result.records.forEach(r => {
+          if (r["שם_רחוב"]) streets.add(r["שם_רחוב"]);
+        });
+        streetSelect.innerHTML = '<option value="">-- בחר רחוב --</option>';
+        [...streets].sort().forEach(street => {
+          const opt = document.createElement("option");
+          opt.value = opt.text = street;
+          streetSelect.appendChild(opt);
+        });
+        streetSelect.disabled = false;
+      } catch (err) {
+        alert("שגיאה בטעינת רחובות");
+        console.error(err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchCities();
+      document.getElementById("citySelect").addEventListener("change", e => {
+        const selected = e.target.value;
+        if (selected) {
+          fetchStreets(selected);
+        }
+      });
+    });
+  </script>
 </body>
+
 </html>
