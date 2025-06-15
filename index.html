@@ -6,7 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://unpkg.com/@zxing/library@latest"></script>
   <style>
+    html {
+      box-sizing: border-box;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    
     body {
+      margin: 0;
+      padding: 10px;
+      background: #f8f8f8;
+    
       font-family: Arial, sans-serif;
       max-width: 700px;
       margin: auto;
@@ -15,6 +26,9 @@
       font-size: 1.1em;
     }
     input, select, button {
+      max-width: 100%;
+      box-sizing: border-box;
+    
       display: block;
       margin: 10px 0;
       padding: 10px;
@@ -32,6 +46,9 @@
       margin-top: 10px;
     }
     video {
+      max-width: 100%;
+      height: auto;
+    
       width: 100%;
       max-width: 400px;
       margin: 10px auto;
