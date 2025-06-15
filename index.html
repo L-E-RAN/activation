@@ -138,30 +138,34 @@
     }
   </script>
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script>
-    async function fetchCities() {
-      try {
-        const res = await fetch("https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&limit=10000");
-        const data = await res.json();
-        const citiesSet = new Set();
-        data.result.records.forEach(r => {
-          const name = r["שם_ישוב"];
-          if (name) citiesSet.add(name.trim());
-        });
-        const list = document.getElementById("citiesList");
-        list.innerHTML = "";
-        [...citiesSet].sort().forEach(city => {
-          const opt = document.createElement("option");
-          opt.value = city;
-          list.appendChild(opt);
-        });
-      } catch (err) {
-        alert("שגיאה בטעינת שמות יישובים");
-        console.error(err);
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", fetchCities);
+    $(document).ready(function() {
+      $.ajax({
+        url: 'https://data.gov.il/api/3/action/datastore_search',
+        data: {
+          resource_id: '9ad3862c-8391-4b2f-84a4-2d4c68625f4b',
+          limit: 10000
+        },
+        dataType: 'jsonp',
+        success: function(data) {
+          const set = new Set();
+          data.result.records.forEach(r => {
+            if (r["שם_ישוב"]) set.add(r["שם_ישוב"].trim());
+          });
+          const list = document.getElementById("citiesList");
+          list.innerHTML = "";
+          [...set].sort().forEach(city => {
+            const opt = document.createElement("option");
+            opt.value = city;
+            list.appendChild(opt);
+          });
+        },
+        error: function(err) {
+          console.error("שגיאה בשליפת ערים", err);
+        }
+      });
+    });
   </script>
 </body>
 
