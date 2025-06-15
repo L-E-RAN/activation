@@ -81,13 +81,15 @@
     <label>קומה<input name="floor" /></label>
     <label>דירה<input name="apartment" /></label>
     
-    <label style="display: flex; flex-direction: column;">
+    
+    <label>
       תאריך רכישה
-      <div style="display: flex; flex-direction: row-reverse; align-items: center;">
-        <input name="purchaseDate" type="date" required style="flex: 1; max-width: 200px; direction: ltr;" />
-        <span style="margin-right: 10px;">(dd/mm/yyyy)</span>
+      <div style="display: flex; flex-direction: column; align-items: flex-start;">
+        <input name="purchaseDate" type="date" required style="max-width: 250px; direction: ltr;" />
+        <span style="font-size: 0.8em; color: #555;">פורמט: dd/mm/yyyy</span>
       </div>
     </label>
+    
     
     <label>מספר סיריאלי
       <input name="serial" id="serialInput" required />
