@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>אקטיבציית אחריות</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; direction: rtl; }
+    input, select, button { display: block; margin: 10px 0; padding: 8px; width: 100%; }
+    button { background: green; color: white; border: none; cursor: pointer; }
+    label { font-weight: bold; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>טופס אקטיבציית אחריות</h1>
+  <form id="activationForm">
+    <label>שם פרטי<input name="firstName" required></label>
+    <label>שם משפחה<input name="lastName" required></label>
+    <label>תעודת זהות / ח.פ<input name="idNumber" required></label>
+    <label>סוג לקוח
+      <select name="clientType" required>
+        <option value="פרטי">פרטי</option>
+        <option value="עסקי">עסקי</option>
+      </select>
+    </label>
+    <label>טלפון<input name="phone" type="tel" required></label>
+    <label>אימייל<input name="email" type="email" required></label>
+    <label>יישוב<input name="city" required></label>
+    <label>רחוב<input name="street" required></label>
+    <label>מספר בית<input name="houseNumber" required></label>
+    <label>קומה<input name="floor"></label>
+    <label>דירה<input name="apartment"></label>
+    <label>תאריך רכישה<input name="purchaseDate" type="date" required></label>
+    <label>מספר סיריאלי<input name="serial" required></label>
+    <button type="submit">שלח</button>
+  </form>
+  <script src="script.js"></script>
+</body>
+</html>
