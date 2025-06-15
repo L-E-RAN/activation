@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <title>אקטיבציית אחריות</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="https://unpkg.com/html5-qrcode"
+    ></script>
+    <script>
+      const { Html5QrcodeSupportedFormats, Html5QrcodeScanType } = window;
+    </script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -82,6 +87,13 @@
 
       scanner = new Html5Qrcode("reader");
       scanner.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: 250,
+          supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+          formatsToSupport: [Html5QrcodeSupportedFormats.CODE_128]
+        },
         { facingMode: "environment" },
         {
           fps: 10,
