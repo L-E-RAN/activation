@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>אקטיבציית אחריות</title>
+  <title>אקטיבציית אחריות עם ZXing</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://unpkg.com/@zxing/library@latest"></script>
   <style>
@@ -82,15 +82,12 @@
     <label>דירה<input name="apartment" /></label>
     
     
-    <label>
-      <div style="display: flex; flex-direction: column;">
-        <span style="font-weight: bold;">תאריך רכישה</span>
-        <div style="display: flex; flex-direction: row-reverse; align-items: center; gap: 8px;">
-          <input name="purchaseDate" type="date" required style="width: 100%; max-width: 180px; direction: ltr;" />
-          
-        </div>
-      </div>
-    </label>
+    
+    <div style="display: flex; flex-direction: row-reverse; align-items: center; gap: 10px; margin: 10px 0;">
+      <label style="font-weight: bold; white-space: nowrap;">תאריך רכישה</label>
+      <input name="purchaseDate" type="date" required style="flex: 1; max-width: 200px; direction: ltr;" />
+    </div>
+    
     
     
     <label>מספר סיריאלי
