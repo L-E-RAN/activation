@@ -4,12 +4,10 @@
   <meta charset="UTF-8">
   <title>אקטיבציית אחריות</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://unpkg.com/html5-qrcode"
-    ></script>
-    <script>
-      const { Html5QrcodeSupportedFormats, Html5QrcodeScanType } = window;
-    </script>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script>
+    const { Html5QrcodeSupportedFormats, Html5QrcodeScanType } = window;
+  </script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -81,51 +79,49 @@
   <script>
     let scanner;
 
-    function startScan() {
-      document.getElementById("reader").style.display = "block";
-      document.getElementById("close-scan").style.display = "block";
+    async function startScan() {
+      try {
+        const readerElem = document.getElementById("reader");
+        const closeBtn = document.getElementById("close-scan");
+        readerElem.style.display = "block";
+        closeBtn.style.display = "block";
 
-      scanner = new Html5Qrcode("reader");
-    } catch (err) {
+        scanner = new Html5Qrcode("reader");
+
+        await scanner.start(
+          { facingMode: "environment" },
+          {
+            fps: 10,
+            qrbox: 250,
+            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+            formatsToSupport: [
+              Html5QrcodeSupportedFormats.QR_CODE,
+              Html5QrcodeSupportedFormats.CODE_128,
+              Html5QrcodeSupportedFormats.CODE_39,
+              Html5QrcodeSupportedFormats.EAN_13
+            ]
+          },
+          (decodedText) => {
+            document.getElementById("serialInput").value = decodedText;
+            stopScan();
+            alert("✅ הסיריאלי נקלט בהצלחה!");
+          },
+          (errorMessage) => {
+            // שגיאת סריקה שקטה
+          }
+        );
+      } catch (err) {
         alert("❗ לא ניתן להפעיל מצלמה. ודא שהרשאות פתוחות ושאתה ב-HTTPS.");
         console.error(err);
-    }
-      try {
-        scanner.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: 250,
-          supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-          formatsToSupport: [
-            Html5QrcodeSupportedFormats.QR_CODE,
-            Html5QrcodeSupportedFormats.CODE_128,
-            Html5QrcodeSupportedFormats.CODE_39,
-            Html5QrcodeSupportedFormats.EAN_13
-          ]
-        },
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: 250
-        },
-        qrCodeMessage => {
-          document.getElementById("serialInput").value = qrCodeMessage;
-          stopScan();
-        },
-        errorMessage => {
-          // silent error
-        }
-      );
+      }
     }
 
-    function stopScan() {
+    async function stopScan() {
       if (scanner) {
-        scanner.stop().then(() => {
-          scanner.clear();
-          document.getElementById("reader").style.display = "none";
-          document.getElementById("close-scan").style.display = "none";
-        });
+        await scanner.stop();
+        scanner.clear();
+        document.getElementById("reader").style.display = "none";
+        document.getElementById("close-scan").style.display = "none";
       }
     }
   </script>
