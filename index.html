@@ -71,24 +71,26 @@
       <select name="clientType" required>
         <option value="פרטי">פרטי</option>
         <option value="עסקי">עסקי</option>
-      </select>
+      </datalist>
     </label>
     <label>טלפון<input name="phone" type="tel" required /></label>
     <label>אימייל<input name="email" type="email" required /></label>
     
     <label>
       יישוב
-      <select name="city" id="citySelect" required>
-        <option value="">-- בחר יישוב --</option>
-      </select>
+      <input list="citiesList" name="city" id="citySelect" required />
+<datalist id="citiesList">
+        
+      </datalist>
     </label>
     
     
     <label>
       רחוב
-      <select name="street" id="streetSelect" required disabled>
+      <input list="streetsList" name="street" id="streetSelect" required disabled />
+<datalist id="streetsList">
         <option value="">-- בחר יישוב קודם --</option>
-      </select>
+      </datalist>
     </label>
     
     <label>מספר בית<input name="houseNumber" required /></label>
@@ -178,7 +180,7 @@
         data.result.records.forEach(r => {
           if (r["שם_רחוב"]) streets.add(r["שם_רחוב"]);
         });
-        streetSelect.innerHTML = '<option value="">-- בחר רחוב --</option>';
+        streetSelect.innerHTML = '';
         [...streets].sort().forEach(street => {
           const opt = document.createElement("option");
           opt.value = opt.text = street;
