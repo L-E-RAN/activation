@@ -7,7 +7,7 @@ document.getElementById('activationForm').addEventListener('submit', async funct
   console.log("שולח נתונים ל-Google Sheets", data);
 
   try {
-    await fetch("https://script.google.com/macros/s/AKfycbzc3wjolLJaojMo7MhEKVPfAs-HlBLGbZC6WmFFjQei5k2r4cjBs5bXPIG2SV-5j123/exec", {
+    await fetch("https://script.google.com/macros/s/AKfycbyAsVjb6nNrrRO5o1unQpUUOBPYQPG7BE3b4cbOVitPQlYwJpxt0Qh3gYUto2U5pAv9/exec", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
