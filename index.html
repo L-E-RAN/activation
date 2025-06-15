@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>אקטיבציית אחריות</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-  <script>
-    const { Html5QrcodeSupportedFormats, Html5QrcodeScanType } = window;
-  </script>
+  <meta charset="UTF-8" />
+  <title>אקטיבציית אחריות עם ZXing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://unpkg.com/@zxing/library@latest"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,7 +31,7 @@
       font-weight: bold;
       margin-top: 10px;
     }
-    #reader {
+    video {
       width: 100%;
       max-width: 400px;
       margin: 10px auto;
@@ -50,79 +47,56 @@
 <body>
   <h1>טופס אקטיבציית אחריות</h1>
   <form action="https://usebasin.com/f/675548984ac4" method="POST">
-    <label>שם פרטי<input name="firstName" required></label>
-    <label>שם משפחה<input name="lastName" required></label>
-    <label>תעודת זהות / ח.פ<input name="idNumber" required></label>
+    <label>שם פרטי<input name="firstName" required /></label>
+    <label>שם משפחה<input name="lastName" required /></label>
+    <label>תעודת זהות / ח.פ<input name="idNumber" required /></label>
     <label>סוג לקוח
       <select name="clientType" required>
         <option value="פרטי">פרטי</option>
         <option value="עסקי">עסקי</option>
       </select>
     </label>
-    <label>טלפון<input name="phone" type="tel" required></label>
-    <label>אימייל<input name="email" type="email" required></label>
-    <label>יישוב<input name="city" required></label>
-    <label>רחוב<input name="street" required></label>
-    <label>מספר בית<input name="houseNumber" required></label>
-    <label>קומה<input name="floor"></label>
-    <label>דירה<input name="apartment"></label>
-    <label>תאריך רכישה<input name="purchaseDate" type="date" required></label>
+    <label>טלפון<input name="phone" type="tel" required /></label>
+    <label>אימייל<input name="email" type="email" required /></label>
+    <label>יישוב<input name="city" required /></label>
+    <label>רחוב<input name="street" required /></label>
+    <label>מספר בית<input name="houseNumber" required /></label>
+    <label>קומה<input name="floor" /></label>
+    <label>דירה<input name="apartment" /></label>
+    <label>תאריך רכישה<input name="purchaseDate" type="date" required /></label>
     <label>מספר סיריאלי
-      <input name="serial" id="serialInput" required>
-      <button type="button" onclick="startScan()">📷 סרוק סיריאלי</button>
+      <input name="serial" id="serialInput" required />
+      <button type="button" onclick="startZXingScan()">📷 סרוק סיריאלי</button>
     </label>
-    <div id="reader"></div>
-    <button type="button" id="close-scan" onclick="stopScan()">❌ סגור סריקה</button>
+    <video id="video" muted></video>
+    <button type="button" id="close-scan" onclick="stopZXingScan()">❌ סגור סריקה</button>
     <button type="submit">שלח</button>
   </form>
 
   <script>
-    let scanner;
+    const codeReader = new ZXing.BrowserBarcodeReader();
+    const videoElem = document.getElementById("video");
+    const closeBtn = document.getElementById("close-scan");
 
-    async function startScan() {
+    async function startZXingScan() {
       try {
-        const readerElem = document.getElementById("reader");
-        const closeBtn = document.getElementById("close-scan");
-        readerElem.style.display = "block";
+        videoElem.style.display = "block";
         closeBtn.style.display = "block";
 
-        scanner = new Html5Qrcode("reader");
-
-        await scanner.start(
-          { facingMode: "environment" },
-          {
-            fps: 10,
-            qrbox: 250,
-            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-            formatsToSupport: [
-              Html5QrcodeSupportedFormats.QR_CODE,
-              Html5QrcodeSupportedFormats.CODE_128,
-              Html5QrcodeSupportedFormats.CODE_39,
-              Html5QrcodeSupportedFormats.EAN_13
-            ]
-          },
-          (decodedText) => {
-            document.getElementById("serialInput").value = decodedText;
-            stopScan();
-            alert("✅ הסיריאלי נקלט בהצלחה!");
-          },
-          (errorMessage) => {
-            // שגיאת סריקה שקטה
-          }
-        );
+        const result = await codeReader.decodeOnceFromVideoDevice(null, "video");
+        document.getElementById("serialInput").value = result.text;
+        alert("✅ סריאלי נקלט בהצלחה!");
+        stopZXingScan();
       } catch (err) {
-        alert("❗ לא ניתן להפעיל מצלמה. ודא שהרשאות פתוחות ושאתה ב-HTTPS.");
+        alert("⚠️ לא ניתן לסרוק. ודא שיש גישה למצלמה ושהברקוד ברור.");
         console.error(err);
       }
     }
 
-    async function stopScan() {
-      if (scanner) {
-        await scanner.stop();
-        scanner.clear();
-        document.getElementById("reader").style.display = "none";
-        document.getElementById("close-scan").style.display = "none";
-      }
+    function stopZXingScan() {
+      codeReader.reset();
+      videoElem.style.display = "none";
+      closeBtn.style.display = "none";
     }
   </script>
 </body>
