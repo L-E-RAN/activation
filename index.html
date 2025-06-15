@@ -3,11 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <title>אקטיבציית אחריות</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
-    body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; direction: rtl; }
-    input, select, button { display: block; margin: 10px 0; padding: 8px; width: 100%; }
-    button { background: green; color: white; border: none; cursor: pointer; }
-    label { font-weight: bold; margin-top: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      direction: rtl;
+      font-size: 1.1em;
+    }
+    input, select, button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      font-size: 1em;
+    }
+    button {
+      background: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      margin: 10px auto;
+      display: none;
+    }
+    #close-scan {
+      display: none;
+      margin-bottom: 20px;
+      background: darkred;
+    }
   </style>
 </head>
 <body>
@@ -30,8 +64,48 @@
     <label>קומה<input name="floor"></label>
     <label>דירה<input name="apartment"></label>
     <label>תאריך רכישה<input name="purchaseDate" type="date" required></label>
-    <label>מספר סיריאלי<input name="serial" required></label>
+    <label>מספר סיריאלי
+      <input name="serial" id="serialInput" required>
+      <button type="button" onclick="startScan()">📷 סרוק סיריאלי</button>
+    </label>
+    <div id="reader"></div>
+    <button type="button" id="close-scan" onclick="stopScan()">❌ סגור סריקה</button>
     <button type="submit">שלח</button>
   </form>
+
+  <script>
+    let scanner;
+
+    function startScan() {
+      document.getElementById("reader").style.display = "block";
+      document.getElementById("close-scan").style.display = "block";
+
+      scanner = new Html5Qrcode("reader");
+      scanner.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: 250
+        },
+        qrCodeMessage => {
+          document.getElementById("serialInput").value = qrCodeMessage;
+          stopScan();
+        },
+        errorMessage => {
+          // silent error
+        }
+      );
+    }
+
+    function stopScan() {
+      if (scanner) {
+        scanner.stop().then(() => {
+          scanner.clear();
+          document.getElementById("reader").style.display = "none";
+          document.getElementById("close-scan").style.display = "none";
+        });
+      }
+    }
+  </script>
 </body>
 </html>
